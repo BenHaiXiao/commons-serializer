@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd"
+	default-lazy-init="false">
+	
+	<bean id="kryoSerializer" class="com.github.benhaixiao.commons.serializer.KryoSerializer">
+		<property name="kryoUtils">
+			<bean class="com.github.benhaixiao.commons.serializer.kryo.KryoUtils">
+				<property name="kryoPool" ref="kryoPoolFactoryImpl" />
+			</bean>
+		</property>
+	</bean>
+	<bean id="javaSerializer" class="com.github.benhaixiao.commons.serializer.JavaSerializer" />
+	
+	<!-- 池大小 -->
+	<bean id="kryoConfig" class="org.apache.commons.pool2.impl.GenericObjectPoolConfig">
+		<property name="maxTotal" value="500" />
+		<property name="maxIdle" value="20" />
+		<property name="minIdle" value="5" />
+	</bean>
+
+	<bean id="kryoPoolFactoryImpl"
+		class="com.github.benhaixiao.commons.serializer.kryo.KryoPoolFactoryImpl">
+		<property name="config" ref="kryoConfig" />
+	</bean>
+
+	<!-- kryo 注册 -->
+	<bean id="kryoholder" class="com.github.benhaixiao.commons.serializer.kryo.KryoHolder">
+		<property name="clazs">
+			<list>
+				<value>com.github.benhaixiao.commons.serializer.test.EntAudioLive</value>
+			</list>
+		</property>
+	</bean>
+</beans>
